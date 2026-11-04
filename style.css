@@ -2786,3 +2786,12 @@ a {
 .simple-maroon-envelope .velvet-gold-frame {
   display: none !important;
 }
+
+
+
+/* Smooth gallery photo transitions */
+
+#galleryImage {
+  transition: opacity 0.25s ease-in-out;
+  object-fit: contain;
+}
