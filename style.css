@@ -1,0 +1,2788 @@
+
+:root {
+  --gold: #e7c488;
+  --burgundy: #571b30;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #230c13;
+  font-family: Georgia, serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #230c13;
+  isolation: isolate;
+}
+
+.page.active {
+  display: flex;
+  z-index: 30;
+}
+
+.art {
+  position: relative;
+  width: min(100vw, 56.25dvh);
+  height: 100%;
+  flex: none;
+  overflow: hidden;
+}
+
+.art > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ==================================
+   TEMPLE DOOR
+================================== */
+
+.temple-door {
+  position: absolute;
+  z-index: 50;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100vw, 56.25dvh);
+  height: 100%;
+  display: flex;
+  perspective: 1400px;
+  cursor: pointer;
+}
+
+.door-half {
+  width: 50%;
+  height: 100%;
+  flex: 0 0 50%;
+  background-image:
+    url("images/Ornate Temple Wedding Entrance.png");
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  backface-visibility: hidden;
+}
+
+.door-half.left {
+  background-position: left center;
+  transform-origin: left center;
+}
+
+.door-half.right {
+  background-position: right center;
+  transform-origin: right center;
+}
+
+.temple-door.opening .left {
+  animation: doorLeft 2.4s ease-in-out forwards;
+}
+
+.temple-door.opening .right {
+  animation: doorRight 2.4s ease-in-out forwards;
+}
+
+@keyframes doorLeft {
+  to { transform: rotateY(-110deg); }
+}
+
+@keyframes doorRight {
+  to { transform: rotateY(110deg); }
+}
+
+.temple-door.opened {
+  display: none;
+}
+
+.door-label {
+  position: absolute;
+  top: 69%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  color: #ffe1a2;
+  background: #341508dd;
+  border: 1px solid #cba264;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.door-label strong {
+  font-size: clamp(20px, 5vw, 29px);
+}
+
+.door-label small {
+  font-size: 12px;
+}
+
+.temple-door.opening .door-label {
+  opacity: 0;
+}
+
+/* ==================================
+   NAVIGATION HINTS
+================================== */
+
+.tap-hint,
+.scroll-hint {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  white-space: nowrap;
+  padding: 9px 17px;
+  color: #ffe5b5;
+  background: #3b1024d9;
+  border: 1px solid #cda56d;
+  border-radius: 30px;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.tap-hint {
+  opacity: 0;
+}
+
+#page1.door-finished .tap-hint {
+  opacity: 1;
+}
+
+.scroll-hint {
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  50% {
+    transform: translate(-50%, -7px);
+  }
+}
+
+/* ==================================
+   MAHARAJA JEWELLED ENVELOPE
+================================== */
+
+.opening-envelope-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(
+      ellipse at center,
+      #713b49 0%,
+      #3a1728 55%,
+      #180811 100%
+    );
+  perspective: 1200px;
+  pointer-events: none;
+}
+
+.opening-envelope-screen.play {
+  display: flex;
+  animation: envelopeScreenFade .65s ease 4.4s forwards;
+}
+
+@keyframes envelopeScreenFade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.royal-envelope {
+  position: relative;
+  width: min(82vw, 355px);
+  aspect-ratio: 1.48;
+  transform-style: preserve-3d;
+  filter:
+    drop-shadow(0 20px 22px #0009)
+    drop-shadow(0 0 24px #c89a5c44);
+}
+
+.envelope-back,
+.envelope-letter,
+.envelope-pocket,
+.envelope-flap,
+.jewel-border,
+.maharaja-seal {
+  position: absolute;
+}
+
+/* Antique gold backing */
+
+.envelope-back {
+  inset: 0;
+  z-index: 1;
+  border-radius: 7px;
+  border: 3px ridge #d8b873;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 10px,
+      #fff1bd16 11px 12px
+    ),
+    linear-gradient(
+      135deg,
+      #9b672b,
+      #e7c77f 18%,
+      #fff0ba 48%,
+      #c08b40 80%,
+      #8b5725
+    );
+  box-shadow:
+    inset 0 0 0 6px #c18d46,
+    inset 0 0 0 9px #f9e6b1,
+    inset 0 0 25px #71401699;
+}
+
+/* Ivory invitation card */
+
+.envelope-letter {
+  z-index: 2;
+  left: 9%;
+  bottom: 6%;
+  width: 82%;
+  height: 90%;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  background:
+    linear-gradient(145deg, #fffaf0, #eddbb5);
+  border: 2px solid #c29a55;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 0 0 4px #fff7e4,
+    inset 0 0 0 5px #bd9658,
+    0 4px 12px #0004;
+}
+
+.envelope-letter small {
+  font-size: 8px;
+  letter-spacing: 1.1px;
+  color: #8d653d;
+}
+
+.envelope-letter h2 {
+  margin: 2px 0;
+  color: #76334a;
+  font-size: clamp(20px, 5vw, 27px);
+  font-style: italic;
+  font-weight: normal;
+}
+
+.envelope-letter p {
+  margin: 0;
+  color: #75354a;
+  font-size: clamp(11px, 3vw, 15px);
+}
+
+.letter-amp {
+  color: #b1844c;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.letter-ornament {
+  color: #b68c4b;
+  font-size: 15px;
+}
+
+.letter-divider {
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    90deg, transparent, #b68b4d, transparent
+  );
+}
+
+/* Gold pocket with engraved filigree */
+
+.envelope-pocket {
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  border-radius: 6px;
+  background:
+    radial-gradient(
+      circle at 50% 82%,
+      #fff2b2 0%,
+      #d6aa57 45%,
+      #98652a 100%
+    );
+  clip-path:
+    polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+}
+
+.pocket-pattern {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 15% 82%,
+      transparent 0 20px,
+      #fff1bb77 21px 22px,
+      transparent 23px
+    ),
+    radial-gradient(
+      circle at 85% 82%,
+      transparent 0 20px,
+      #fff1bb77 21px 22px,
+      transparent 23px
+    ),
+    repeating-radial-gradient(
+      ellipse at 50% 100%,
+      transparent 0 14px,
+      #8f5a2944 15px 16px,
+      transparent 17px 29px
+    );
+  opacity: .8;
+}
+
+.pocket-crest {
+  position: absolute;
+  bottom: 13%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 50px;
+  color: #fff0b1;
+  text-shadow:
+    1px 2px #8e5b2c,
+    0 0 12px #fff0bd;
+}
+
+/* Royal top flap */
+
+.envelope-flap {
+  inset: 0;
+  z-index: 5;
+  background:
+    repeating-radial-gradient(
+      ellipse at 50% 0%,
+      transparent 0 13px,
+      #fff4c755 14px 15px,
+      transparent 16px 28px
+    ),
+    linear-gradient(
+      180deg,
+      #fce9aa,
+      #d7a44f 62%,
+      #9c662b
+    );
+  clip-path:
+    polygon(0 0, 100% 0, 50% 61%);
+  transform-origin: top center;
+  backface-visibility: hidden;
+}
+
+.flap-engraving {
+  position: absolute;
+  inset: 7%;
+  border: 2px solid #fff0b077;
+  clip-path:
+    polygon(0 0, 100% 0, 50% 61%);
+}
+
+/* Pearl and gemstone ornaments */
+
+.jewel-border {
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+
+.jewel-top,
+.jewel-bottom {
+  position: absolute;
+  left: 9%;
+  width: 82%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.jewel-top {
+  top: 5%;
+}
+
+.jewel-bottom {
+  bottom: 5%;
+}
+
+.pearl {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #d8c49b;
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #fff,
+      #fff6e7 35%,
+      #d9c8a9 78%,
+      #a58e6b
+    );
+  box-shadow:
+    0 1px 3px #4a260b88,
+    0 0 3px #fff8de;
+}
+
+.gem {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #f6d99b;
+  transform: rotate(45deg);
+  box-shadow:
+    0 0 0 2px #a67436,
+    0 2px 5px #3d1b0a88;
+}
+
+.gem.ruby {
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      #ffb2b6,
+      #b7143d 45%,
+      #590b28
+    );
+}
+
+.gem.emerald {
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      #c0f9d3,
+      #18875c 45%,
+      #07452f
+    );
+}
+
+.gem.diamond {
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      #fff,
+      #e7f8ff 35%,
+      #9ebacb 75%,
+      #e9ffff
+    );
+}
+
+.corner-jewel {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 3px double #ffe9a4;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      #a8732e,
+      #ffe5a0,
+      #a8732e,
+      #f9db8a,
+      #a8732e
+    );
+  display: grid;
+  place-items: center;
+  box-shadow: 0 2px 5px #3d1a0988;
+}
+
+.corner-jewel span {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      #ffc3c7,
+      #9b1138 60%,
+      #49091d
+    );
+  border: 2px solid #e7c47f;
+}
+
+.top-left { top: -7px; left: -7px; }
+.top-right { top: -7px; right: -7px; }
+.bottom-left { bottom: -7px; left: -7px; }
+.bottom-right { bottom: -7px; right: -7px; }
+
+/* Maharaja ruby brooch */
+
+.maharaja-seal {
+  z-index: 8;
+  top: 51%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-conic-gradient(
+      from 0deg,
+      #f9e2a0 0deg 15deg,
+      #a76a2c 15deg 30deg
+    );
+  border: 4px double #fff0b8;
+  box-shadow:
+    0 0 0 3px #8f5a24,
+    0 5px 13px #0008,
+    0 0 18px #f4c87988;
+}
+
+.seal-petals {
+  position: absolute;
+  inset: 9px;
+  border: 3px dotted #fff3c7;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      #a77536 0%,
+      #e6bf72 65%,
+      #a46d2d
+    );
+}
+
+.seal-ruby {
+  position: relative;
+  z-index: 2;
+  width: 38px;
+  height: 43px;
+  border-radius: 50%;
+  transform: rotate(-12deg);
+  border: 4px ridge #ffe6a3;
+  background:
+    radial-gradient(
+      ellipse at 30% 25%,
+      #ffb3c4 0%,
+      #d21a4e 30%,
+      #790b2c 70%,
+      #370517
+    );
+  box-shadow:
+    inset -4px -5px 8px #280313,
+    0 0 9px #ffb0b1;
+}
+
+.seal-pearl {
+  position: absolute;
+  z-index: 3;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, white, #d6bf9a);
+}
+
+.seal-pearl.p1 { top: 8px; left: 34px; }
+.seal-pearl.p2 { bottom: 8px; left: 34px; }
+.seal-pearl.p3 { left: 8px; top: 34px; }
+.seal-pearl.p4 { right: 8px; top: 34px; }
+
+/* Envelope animation */
+
+.opening-envelope-screen.play .royal-envelope {
+  animation: envelopeAppear 1s ease-out both;
+}
+
+.opening-envelope-screen.play .maharaja-seal {
+  animation: royalSealOpen .7s ease 1.15s forwards;
+}
+
+.opening-envelope-screen.play .envelope-flap {
+  animation: royalFlapOpen 1s ease 1.75s forwards;
+}
+
+.opening-envelope-screen.play .envelope-letter {
+  animation: royalLetterRise 1.35s ease 2.6s forwards;
+}
+
+.opening-envelope-screen.play .jewel-border {
+  animation: jewelsFade .4s ease 2.45s forwards;
+}
+
+@keyframes envelopeAppear {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(.75);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes royalSealOpen {
+  0% {
+    filter: brightness(1);
+  }
+  40% {
+    filter: brightness(1.8);
+    transform: translate(-50%, -50%) scale(1.13);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(.35);
+  }
+}
+
+@keyframes royalFlapOpen {
+  to {
+    transform: rotateX(180deg);
+    z-index: 1;
+  }
+}
+
+@keyframes royalLetterRise {
+  65% {
+    transform: translateY(-62%);
+  }
+  100% {
+    transform: translateY(-88%) scale(1.05);
+  }
+}
+
+@keyframes jewelsFade {
+  to { opacity: .3; }
+}
+
+/* ==================================
+   CONTINUOUS VERTICAL SCROLL
+================================== */
+
+.scroll-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  background: #230c13;
+}
+
+.scroll-stage::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-stage.active {
+  display: block;
+}
+
+.scroll-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #230c13;
+}
+
+/* ==================================
+   COUNTDOWN
+================================== */
+
+.countdown {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76%;
+  display: flex;
+  gap: 3%;
+  z-index: 5;
+}
+
+.countdown > div {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 2px;
+  text-align: center;
+  background: #fff5e1f5;
+  border: 1px solid #c49b59;
+  border-radius: 8px;
+}
+
+.countdown b {
+  display: block;
+  font-size: clamp(12px, 3vw, 22px);
+  color: #7c2436;
+}
+
+.countdown small {
+  display: block;
+  margin-top: 4px;
+  font-size: clamp(6px, 1.5vw, 9px);
+  color: #8c663e;
+}
+
+.countdown.finished {
+  justify-content: center;
+  padding: 12px;
+  text-align: center;
+  background: #fff5e1;
+  color: #7c2436;
+  border: 1px solid #c49b59;
+  border-radius: 9px;
+  font-size: 15px;
+}
+
+/* ==================================
+   GOLD SCRATCH
+================================== */
+
+.date-scratch {
+  position: absolute;
+  top: 21%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 45%;
+  height: 15%;
+  z-index: 20;
+  overflow: hidden;
+  border-radius: 12px;
+  touch-action: none;
+}
+
+#scratchCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.date-scratch.revealed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .8s ease;
+}
+
+/* ==================================
+   ROSE PETALS DURING SCRATCH
+================================== */
+
+.scratch-rose-petal {
+  position: fixed;
+  top: -40px;
+  z-index: 999;
+  width: 15px;
+  height: 22px;
+  border-radius: 75% 15% 65% 25%;
+  background:
+    radial-gradient(
+      ellipse at 30% 25%,
+      #ff9da8,
+      #e53655 35%,
+      #ad1235 70%,
+      #650d25
+    );
+  opacity: 0;
+  pointer-events: none;
+  animation: scratchRoseFall linear forwards;
+}
+
+@keyframes scratchRoseFall {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) rotate(0deg);
+  }
+  10% { opacity: 1; }
+  85% { opacity: .95; }
+  100% {
+    opacity: 0;
+    transform:
+      translate3d(var(--drift), 110dvh, 0)
+      rotate(var(--rotation));
+  }
+}
+
+/* ==================================
+   ROYAL CURTAINS
+================================== */
+
+.curtain {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #430b1d 0%,
+      #7b1733 12%,
+      #360818 25%,
+      #6b122b 38%,
+      #430b1d 50%
+    );
+}
+
+.left-curtain { left: 0; }
+.right-curtain { right: 0; }
+
+#page4.curtains-open .left-curtain {
+  animation: curtainLeft 1.7s ease forwards;
+}
+
+#page4.curtains-open .right-curtain {
+  animation: curtainRight 1.7s ease forwards;
+}
+
+@keyframes curtainLeft {
+  to { transform: translateX(-100%); }
+}
+
+@keyframes curtainRight {
+  to { transform: translateX(100%); }
+}
+
+/* ==================================
+   MAP LINKS
+================================== */
+
+.temple-directions,
+.reception-directions {
+  position: absolute;
+  z-index: 30;
+  background: transparent;
+  cursor: pointer;
+}
+
+.temple-directions {
+  top: 62%;
+  left: 42%;
+  width: 38%;
+  height: 4%;
+}
+
+.reception-directions {
+  top: 44.5%;
+  left: 30.5%;
+  width: 37%;
+  height: 4.5%;
+}
+
+/* ==================================
+   CINEMATIC ROYAL GALLERY
+================================== */
+
+.gallery-page {
+  background:
+    radial-gradient(
+      ellipse at 50% 35%,
+      #603247 0%,
+      #361b2b 55%,
+      #1e0d17 100%
+    );
+  isolation: isolate;
+}
+
+.gallery-page::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(215,173,111,.24);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.gallery-container {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 550px);
+  height: 100%;
+  padding: 36px 15px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  color: #f6dfb6;
+}
+
+.gallery-heading {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.gallery-ornament {
+  font-size: 16px;
+  color: #d7ac75;
+  margin-bottom: 5px;
+}
+
+.gallery-eyebrow {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #d9b782;
+  margin-bottom: 7px;
+}
+
+.gallery-heading h1 {
+  margin: 0;
+  color: #f7ddb2;
+  font-size: clamp(23px, 5.7vw, 34px);
+  font-style: italic;
+  font-weight: normal;
+  text-shadow: 0 2px 12px #0004;
+}
+
+.gallery-heading p {
+  margin: 8px 0 0;
+  color: #d6b78b;
+  font-size: 11px;
+  letter-spacing: .8px;
+}
+
+.gallery-photo-area {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  touch-action: pan-y;
+}
+
+.gallery-frame {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  padding: 6px;
+  border: 1px solid #d1aa75;
+  border-radius: 10px;
+  background: #1a0d15;
+  box-shadow:
+    0 0 0 3px rgba(215,173,111,.08),
+    0 15px 35px rgba(0,0,0,.45);
+  overflow: hidden;
+}
+
+.gallery-photo-inner {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  border: 1px solid rgba(216,179,122,.32);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.gallery-photo-inner img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 3px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.gallery-photo-inner img.photo-changing {
+  animation: photoFadeZoom .55s ease both;
+}
+
+@keyframes photoFadeZoom {
+  from {
+    opacity: .15;
+    transform: scale(.965);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+.gallery-arrow {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 46px;
+  padding: 0;
+  border: 1px solid #caa36d;
+  border-radius: 24px;
+  background: rgba(75,35,53,.9);
+  color: #f6dcac;
+  font-family: Georgia, serif;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.gallery-arrow:active {
+  background: #87536b;
+  transform: scale(.93);
+}
+
+.gallery-controls {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+.gallery-counter {
+  color: #f2d7a6;
+  font-size: 14px;
+  letter-spacing: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gallery-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.gallery-dot {
+  width: 6px;
+  height: 6px;
+  border: none;
+  padding: 0;
+  border-radius: 50%;
+  background: #866071;
+  cursor: pointer;
+  transition: all .25s ease;
+}
+
+.gallery-dot.active {
+  width: 19px;
+  height: 6px;
+  border-radius: 6px;
+  background: #e9c58d;
+}
+
+.gallery-caption {
+  margin: 0;
+  flex-shrink: 0;
+  color: #e6c69c;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+}
+
+.gallery-continue {
+  flex-shrink: 0;
+  padding: 12px 19px;
+  border: 1px solid #d7b17b;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, #7c4960, #4b2438);
+  color: #f9e3bc;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px #0003;
+}
+
+/* ==================================
+   ROYAL SCROLL THANK YOU
+================================== */
+
+.royal-scroll-page {
+  background:
+    radial-gradient(
+      ellipse at 50% 42%,
+      #64334a 0%,
+      #341726 60%,
+      #1b0a13 100%
+    );
+}
+
+.royal-scroll-page::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(218,178,112,.25);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.scroll-glow {
+  position: absolute;
+  width: 80vw;
+  height: 70vh;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(235,188,115,.19),
+      transparent 70%
+    );
+  filter: blur(25px);
+  pointer-events: none;
+}
+
+.royal-scroll {
+  position: relative;
+  z-index: 5;
+  width: min(82vw, 390px);
+  height: min(69dvh, 610px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 16px 25px #0007);
+}
+
+.scroll-top-rod,
+.scroll-bottom-rod {
+  position: relative;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  width: 110%;
+  height: 24px;
+  flex: 0 0 24px;
+}
+
+.rod-body {
+  flex: 1;
+  height: 16px;
+  background:
+    linear-gradient(
+      180deg,
+      #fff0bf 0%,
+      #d5a85c 28%,
+      #8c5c2c 65%,
+      #edcb87 100%
+    );
+  border: 1px solid #805322;
+  border-radius: 8px;
+}
+
+.rod-cap {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #fff1c6,
+      #c18d43 55%,
+      #75451d
+    );
+  border: 1px solid #9a6a32;
+  box-shadow: 0 2px 5px #0005;
+}
+
+.scroll-paper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      90deg,
+      #d3b88b 0%,
+      #f6e8c9 8%,
+      #fff5de 48%,
+      #f2dfb7 92%,
+      #c9a779 100%
+    );
+  border-left: 2px solid #b58c54;
+  border-right: 2px solid #b58c54;
+  transform-origin: top center;
+}
+
+.scroll-paper-inner {
+  position: absolute;
+  inset: 13px 12px;
+  border: 1px solid #b8945d;
+  outline: 1px solid rgba(184,148,93,.3);
+  outline-offset: -6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  text-align: center;
+  color: #684a38;
+}
+
+.scroll-ornament {
+  display: block;
+  width: min(65%, 180px);
+  height: 38px;
+  color: #ae8349;
+  flex-shrink: 0;
+}
+
+.bottom-ornament {
+  transform: rotate(180deg);
+}
+
+.scroll-small-heading {
+  margin-top: 8px;
+  color: #956c43;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.scroll-paper h1 {
+  margin: 12px 0 8px;
+  font-size: clamp(32px, 8vw, 46px);
+  font-style: italic;
+  font-weight: normal;
+  color: #79344b;
+}
+
+.thank-you-message {
+  max-width: 260px;
+  margin: 12px 0 8px;
+  font-size: clamp(13px, 3.1vw, 16px);
+  line-height: 1.7;
+  color: #755746;
+}
+
+.thank-you-signoff {
+  margin: 13px 0 5px;
+  font-size: 13px;
+  font-style: italic;
+  color: #916a50;
+}
+
+.scroll-couple {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin: 8px 0;
+  color: #77364a;
+  font-size: clamp(14px, 3.5vw, 19px);
+  font-weight: bold;
+}
+
+.scroll-heart-art {
+  width: 27px;
+  height: 26px;
+  color: #b18a59;
+}
+
+/* Scroll unroll animation */
+
+.royal-scroll-page .royal-scroll {
+  opacity: 0;
+}
+
+.royal-scroll-page .scroll-paper {
+  transform: scaleY(.015);
+}
+
+.royal-scroll-page .scroll-bottom-rod {
+  transform: translateY(-50px);
+}
+
+.royal-scroll-page .scroll-paper-inner {
+  opacity: 0;
+}
+
+#page7.active .royal-scroll {
+  animation: scrollAppear .7s ease forwards;
+}
+
+#page7.active .scroll-paper {
+  animation:
+    parchmentUnroll 2.4s
+    cubic-bezier(.22,.75,.25,1)
+    .7s forwards;
+}
+
+#page7.active .scroll-bottom-rod {
+  animation:
+    bottomRodDrop 2.4s
+    cubic-bezier(.22,.75,.25,1)
+    .7s forwards;
+}
+
+#page7.active .scroll-paper-inner {
+  animation: scrollTextReveal 1.1s ease 3.15s forwards;
+}
+
+@keyframes scrollAppear {
+  from {
+    opacity: 0;
+    transform: translateY(35px) scale(.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes parchmentUnroll {
+  from { transform: scaleY(.015); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes bottomRodDrop {
+  from { transform: translateY(-50px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes scrollTextReveal {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scroll-exit-hint {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #f2d4a1;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#page7.active .scroll-exit-hint {
+  animation: scrollTextReveal .8s ease 4.6s forwards;
+}
+
+.exit-message {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  background:
+    radial-gradient(circle, #623449, #230c13 75%);
+  color: #f6dcae;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 17px;
+  padding: 24px;
+}
+
+.exit-message[hidden] {
+  display: none;
+}
+
+.exit-flourish {
+  color: #d9b57b;
+  font-size: 50px;
+}
+
+.exit-message strong {
+  font-size: 29px;
+  font-style: italic;
+  font-weight: normal;
+}
+
+.exit-message small {
+  font-size: 14px;
+}
+
+.exit-message span {
+  color: #d9b57b;
+  font-size: 14px;
+}
+
+/* ==================================
+   MUSIC
+================================== */
+
+.music-toggle {
+  position: fixed;
+  right: 12px;
+  bottom: 18px;
+  z-index: 10000;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #d7ac68;
+  background: #581427e8;
+  color: #ffe8bd;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.music-toggle[hidden] {
+  display: none;
+}
+
+/* ==================================
+   SMALL MOBILE SCREENS
+================================== */
+
+@media (max-height: 680px) {
+  .gallery-container {
+    padding-top: 16px;
+    padding-bottom: 13px;
+    gap: 8px;
+  }
+
+  .gallery-heading h1 {
+    font-size: 23px;
+  }
+
+  .gallery-caption {
+    font-size: 11px;
+  }
+
+  .gallery-continue {
+    padding: 9px 15px;
+  }
+
+  .royal-scroll {
+    height: min(76dvh, 510px);
+  }
+
+  .scroll-paper-inner {
+    inset: 8px;
+    padding: 8px;
+  }
+
+  .scroll-ornament {
+    height: 25px;
+  }
+
+  .scroll-small-heading {
+    margin-top: 4px;
+    font-size: 8px;
+  }
+
+  .scroll-paper h1 {
+    margin: 5px 0;
+    font-size: 30px;
+  }
+
+  .thank-you-message {
+    margin: 5px 0;
+    line-height: 1.4;
+    font-size: 11px;
+  }
+
+  .thank-you-signoff {
+    margin: 5px 0;
+    font-size: 11px;
+  }
+
+  .scroll-couple {
+    margin: 5px 0;
+    gap: 3px;
+    font-size: 14px;
+  }
+
+  .scroll-heart-art {
+    width: 21px;
+    height: 21px;
+  }
+}
+
+
+
+/* =========================================
+   ANTIQUE GOLD PALACE ENVELOPE
+   OPTION B - FINAL DESIGN
+========================================= */
+
+.palace-envelope {
+  width: min(82vw, 355px);
+  aspect-ratio: 1.48;
+  position: relative;
+  transform-style: preserve-3d;
+  filter:
+    drop-shadow(0 20px 28px rgba(0,0,0,.55))
+    drop-shadow(0 0 16px rgba(217,171,91,.25));
+}
+
+/* ANTIQUE GOLD BACK */
+
+.palace-envelope .envelope-back {
+  inset: 0;
+  z-index: 1;
+  border-radius: 6px;
+  border: 3px solid #a87a39;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 9px,
+      rgba(255,246,214,.1) 10px 11px
+    ),
+    linear-gradient(
+      135deg,
+      #9d713b 0%,
+      #d4af70 22%,
+      #f6e5bd 50%,
+      #c69b58 76%,
+      #8e632e 100%
+    );
+
+  box-shadow:
+    inset 0 0 0 5px #e7cc96,
+    inset 0 0 0 7px #a77a40,
+    inset 0 0 24px #75471955;
+}
+
+/* IVORY INVITATION CARD */
+
+.palace-envelope .envelope-letter {
+  z-index: 2;
+  left: 9%;
+  bottom: 6%;
+  width: 82%;
+  height: 90%;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  background:
+    linear-gradient(135deg, #fffaf0, #f0dfbe);
+
+  border: 2px solid #bd9457;
+  border-radius: 5px;
+
+  box-shadow:
+    inset 0 0 0 4px #fff7e7,
+    inset 0 0 0 5px #c9a56c,
+    0 6px 15px #0003;
+}
+
+.palace-envelope .envelope-letter h2 {
+  color: #783a4c;
+  font-style: italic;
+  font-weight: normal;
+  font-size: clamp(20px, 5vw, 27px);
+  margin: 3px 0;
+}
+
+.palace-envelope .envelope-letter p {
+  color: #71364b;
+  font-size: clamp(11px, 3vw, 15px);
+  margin: 0;
+}
+
+.palace-envelope .envelope-letter small {
+  color: #967044;
+  font-size: 8px;
+  letter-spacing: 1.1px;
+}
+
+/* EMBOSSED GOLD FRONT POCKET */
+
+.palace-envelope .envelope-pocket {
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  border-radius: 6px;
+
+  clip-path:
+    polygon(
+      0 0,
+      50% 57%,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      #f9e8bf 0%,
+      #d7b477 25%,
+      #b98d4e 52%,
+      #e6ca94 78%,
+      #9f733a 100%
+    );
+}
+
+/* PALACE-STYLE FILIGREE */
+
+.palace-pocket-pattern {
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle at 50% 86%,
+      transparent 0 29px,
+      #fff1c477 30px 31px,
+      transparent 32px 45px,
+      #95652f66 46px 47px,
+      transparent 48px
+    ),
+
+    radial-gradient(
+      ellipse at 20% 90%,
+      transparent 0 28px,
+      #fff1c466 29px 30px,
+      transparent 31px
+    ),
+
+    radial-gradient(
+      ellipse at 80% 90%,
+      transparent 0 28px,
+      #fff1c466 29px 30px,
+      transparent 31px
+    ),
+
+    repeating-radial-gradient(
+      ellipse at 50% 100%,
+      transparent 0 15px,
+      #8b5b2940 16px 17px,
+      transparent 18px 32px
+    );
+
+  opacity: .85;
+}
+
+.palace-pocket-emblem {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  transform: translateX(-50%);
+
+  color: #fff0c3;
+  font-size: 52px;
+
+  text-shadow:
+    1px 2px #94662f,
+    0 0 8px #fff1b4;
+}
+
+/* PALACE TOP FLAP */
+
+.palace-envelope .envelope-flap {
+  inset: 0;
+  z-index: 5;
+
+  clip-path:
+    polygon(
+      0 0,
+      100% 0,
+      50% 61%
+    );
+
+  transform-origin: top center;
+  backface-visibility: hidden;
+
+  background:
+    repeating-radial-gradient(
+      ellipse at 50% -10%,
+      transparent 0 14px,
+      rgba(255,249,224,.45) 15px 16px,
+      transparent 17px 30px
+    ),
+
+    linear-gradient(
+      180deg,
+      #fff0c7 0%,
+      #e0c18a 40%,
+      #bb8c4c 82%,
+      #94652f 100%
+    );
+
+  filter: drop-shadow(0 3px 3px #6c431d55);
+}
+
+.palace-flap-pattern {
+  position: absolute;
+  inset: 6%;
+
+  background:
+    repeating-radial-gradient(
+      circle at 50% 0,
+      transparent 0 19px,
+      #94642c55 20px 21px,
+      transparent 22px 37px
+    );
+
+  border-top: 2px solid #fff2c7;
+}
+
+/* DECORATIVE PEARL FRAME */
+
+.palace-decoration {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.palace-pearl-line {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  height: 13px;
+
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      #fffefa 0 3px,
+      #dcc8a7 4px,
+      transparent 5px
+    );
+
+  background-size: 17px 13px;
+  background-repeat: repeat-x;
+
+  filter: drop-shadow(0 1px 2px #78542d88);
+}
+
+.palace-pearl-top {
+  top: 5%;
+}
+
+.palace-pearl-bottom {
+  bottom: 5%;
+}
+
+/* ENGRAVED CORNER ORNAMENTS */
+
+.palace-corner {
+  position: absolute;
+  color: #fff0c1;
+  font-size: 30px;
+  line-height: 1;
+
+  text-shadow:
+    1px 2px #92622c,
+    0 0 5px #ffe7a4;
+}
+
+.palace-corner.tl {
+  top: 7px;
+  left: 9px;
+}
+
+.palace-corner.tr {
+  top: 7px;
+  right: 9px;
+  transform: scaleX(-1);
+}
+
+.palace-corner.bl {
+  bottom: 7px;
+  left: 9px;
+  transform: scaleY(-1);
+}
+
+.palace-corner.br {
+  bottom: 7px;
+  right: 9px;
+  transform: scale(-1);
+}
+
+/* CENTRAL RUBY KUNDAN SEAL */
+
+.palace-envelope .palace-seal {
+  position: absolute;
+  z-index: 8;
+
+  top: 51%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    conic-gradient(
+      #9e6c30,
+      #fce6a9,
+      #b17a36,
+      #fff0bf,
+      #9e6c30
+    );
+
+  border: 4px double #fff0c2;
+
+  box-shadow:
+    0 0 0 3px #9a6c34,
+    0 5px 12px #0006,
+    0 0 14px #f2d29b77;
+}
+
+/* KUNDAN RING */
+
+.palace-seal-ring {
+  position: absolute;
+  inset: 7px;
+  border: 3px dotted #fff5d6;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      #e8c987,
+      #b88a49
+    );
+}
+
+/* RUBY STONE */
+
+.palace-seal-gem {
+  position: relative;
+  z-index: 2;
+
+  width: 34px;
+  height: 40px;
+
+  border-radius: 50%;
+  border: 4px ridge #ffe5a2;
+
+  background:
+    radial-gradient(
+      ellipse at 30% 25%,
+      #ffb6c6 0%,
+      #cf1c4b 30%,
+      #810d30 68%,
+      #3b071a 100%
+    );
+
+  box-shadow:
+    inset -3px -4px 7px #280414,
+    0 0 8px #e74c6b77;
+}
+
+/* ==================================
+   PALACE ENVELOPE OPENING ANIMATION
+================================== */
+
+.opening-envelope-screen.play .palace-envelope {
+  animation: palaceEnvelopeAppear 1s ease-out both;
+}
+
+.opening-envelope-screen.play
+.palace-envelope .palace-seal {
+  animation: palaceSealOpen .7s ease 1.15s forwards;
+}
+
+.opening-envelope-screen.play
+.palace-envelope .envelope-flap {
+  animation: palaceFlapOpen 1s ease 1.75s forwards;
+}
+
+.opening-envelope-screen.play
+.palace-envelope .envelope-letter {
+  animation: palaceLetterRise 1.35s ease 2.6s forwards;
+}
+
+.opening-envelope-screen.play
+.palace-envelope .palace-decoration {
+  animation: palaceDecorFade .4s ease 2.45s forwards;
+}
+
+@keyframes palaceEnvelopeAppear {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(.75);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes palaceSealOpen {
+  0% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+
+  45% {
+    opacity: 1;
+    filter: brightness(1.6);
+    transform:
+      translate(-50%, -50%) scale(1.12);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%) scale(.35);
+  }
+}
+
+@keyframes palaceFlapOpen {
+  to {
+    transform: rotateX(180deg);
+    z-index: 1;
+  }
+}
+
+@keyframes palaceLetterRise {
+  65% {
+    transform: translateY(-62%);
+  }
+
+  100% {
+    transform:
+      translateY(-88%) scale(1.05);
+  }
+}
+
+@keyframes palaceDecorFade {
+  to {
+    opacity: .35;
+  }
+}
+
+
+
+/* ==========================================
+   OPTION 1 — MAHARAJA VELVET ENVELOPE
+========================================== */
+
+.velvet-envelope {
+  position: relative;
+  width: min(83vw, 355px);
+  aspect-ratio: 1.48;
+  transform-style: preserve-3d;
+  filter:
+    drop-shadow(0 22px 28px rgba(0,0,0,.65))
+    drop-shadow(0 0 24px rgba(207,157,77,.28));
+}
+
+/* VELVET FABRIC BASE */
+
+.velvet-envelope .envelope-back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 8px;
+  border: 3px solid #c49a56;
+
+  background:
+    repeating-linear-gradient(
+      125deg,
+      transparent 0 2px,
+      rgba(255,255,255,.025) 3px 4px
+    ),
+    radial-gradient(
+      ellipse at 35% 20%,
+      #81324c,
+      #4d142c 48%,
+      #250918 100%
+    );
+
+  box-shadow:
+    inset 0 0 0 5px #69243c,
+    inset 0 0 0 7px #d6b16f,
+    inset 0 0 0 11px #411023,
+    inset 0 0 35px #10040b;
+}
+
+/* IVORY ROYAL INVITATION CARD */
+
+.velvet-envelope .envelope-letter {
+  position: absolute;
+  z-index: 2;
+  left: 9%;
+  bottom: 6%;
+  width: 82%;
+  height: 90%;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  border-radius: 5px;
+  border: 2px solid #c7a168;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fff9ec,
+      #eddbb7
+    );
+
+  box-shadow:
+    inset 0 0 0 4px #fff8e9,
+    inset 0 0 0 5px #b58a4d,
+    0 5px 14px #0005;
+}
+
+.velvet-envelope .envelope-letter h2 {
+  margin: 3px 0;
+  color: #7a3049;
+  font-size: clamp(20px, 5vw, 27px);
+  font-style: italic;
+  font-weight: normal;
+}
+
+.velvet-envelope .envelope-letter p {
+  margin: 0;
+  color: #713348;
+  font-size: clamp(11px, 3vw, 15px);
+}
+
+.velvet-envelope .envelope-letter small {
+  color: #997344;
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+
+/* ROYAL VELVET FRONT POCKET */
+
+.velvet-envelope .envelope-pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  border-radius: 7px;
+
+  clip-path:
+    polygon(
+      0 0,
+      50% 57%,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
+
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255,255,255,.02) 0 2px,
+      transparent 3px 6px
+    ),
+    radial-gradient(
+      ellipse at 50% 75%,
+      #8b3650,
+      #54152f 55%,
+      #2d0b1d 100%
+    );
+}
+
+/* GOLD ZARDOZI EMBROIDERY */
+
+.velvet-pocket-embroidery {
+  position: absolute;
+  inset: 6%;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 90%,
+      transparent 0 30px,
+      rgba(235,195,117,.8) 31px 32px,
+      transparent 33px 45px,
+      rgba(218,173,98,.6) 46px 47px,
+      transparent 48px
+    ),
+
+    radial-gradient(
+      ellipse at 17% 86%,
+      transparent 0 23px,
+      rgba(239,199,123,.6) 24px 25px,
+      transparent 26px
+    ),
+
+    radial-gradient(
+      ellipse at 83% 86%,
+      transparent 0 23px,
+      rgba(239,199,123,.6) 24px 25px,
+      transparent 26px
+    ),
+
+    repeating-radial-gradient(
+      ellipse at 50% 100%,
+      transparent 0 17px,
+      rgba(211,163,88,.26) 18px 19px,
+      transparent 20px 33px
+    );
+
+  filter: drop-shadow(0 1px 1px #1c0610);
+}
+
+.velvet-centre-motif {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  transform: translateX(-50%);
+
+  color: #e6bc77;
+  font-size: 52px;
+
+  text-shadow:
+    1px 2px #35101f,
+    0 0 8px #c99c5666;
+}
+
+/* ROYAL VELVET FLAP */
+
+.velvet-envelope .envelope-flap {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+
+  clip-path:
+    polygon(
+      0 0,
+      100% 0,
+      50% 61%
+    );
+
+  transform-origin: top center;
+  backface-visibility: hidden;
+
+  background:
+    repeating-linear-gradient(
+      130deg,
+      rgba(255,255,255,.025) 0 2px,
+      transparent 3px 6px
+    ),
+    linear-gradient(
+      180deg,
+      #8c3a53,
+      #54152e 65%,
+      #2c0a1b
+    );
+
+  box-shadow: inset 0 0 22px #15030d;
+}
+
+.velvet-flap-embroidery {
+  position: absolute;
+  inset: 5%;
+
+  background:
+    repeating-radial-gradient(
+      ellipse at 50% -8%,
+      transparent 0 15px,
+      rgba(229,185,106,.6) 16px 17px,
+      transparent 18px 30px
+    );
+
+  border-top: 2px solid #e0b876;
+}
+
+/* GOLD EMBROIDERED FRAME */
+
+.velvet-gold-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.velvet-gold-frame::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+
+  border: 2px solid #d9ad6b;
+  border-radius: 5px;
+
+  box-shadow:
+    inset 0 0 0 3px #5e1d35,
+    inset 0 0 0 4px #bb8b4d,
+    0 0 7px #e8c18166;
+}
+
+.velvet-gold-frame::after {
+  content: "";
+  position: absolute;
+  inset: 17px;
+
+  border: 1px dotted #d8b27588;
+  border-radius: 3px;
+}
+
+/* PEARL BORDERS */
+
+.velvet-pearl-row {
+  position: absolute;
+  left: 12%;
+  width: 76%;
+  height: 12px;
+
+  background-image:
+    radial-gradient(
+      circle at 50% 45%,
+      #fffefa 0 3px,
+      #dfceb1 4px,
+      transparent 5px
+    );
+
+  background-size: 16px 12px;
+  background-repeat: repeat-x;
+
+  filter: drop-shadow(0 1px 2px #18050b);
+}
+
+.pearl-row-top {
+  top: 5%;
+}
+
+.pearl-row-bottom {
+  bottom: 5%;
+}
+
+/* GOLD CORNER MOTIFS */
+
+.velvet-corner {
+  position: absolute;
+  color: #edc98c;
+  font-size: 30px;
+  line-height: 1;
+
+  text-shadow:
+    1px 2px #2b0919,
+    0 0 6px #f5d49766;
+}
+
+.velvet-corner.corner-tl {
+  top: 9px;
+  left: 9px;
+}
+
+.velvet-corner.corner-tr {
+  top: 9px;
+  right: 9px;
+  transform: scaleX(-1);
+}
+
+.velvet-corner.corner-bl {
+  bottom: 9px;
+  left: 9px;
+  transform: scaleY(-1);
+}
+
+.velvet-corner.corner-br {
+  bottom: 9px;
+  right: 9px;
+  transform: scale(-1);
+}
+
+.velvet-side-ornament {
+  position: absolute;
+  top: 50%;
+  color: #e6c181;
+  font-size: 20px;
+}
+
+.side-left {
+  left: 12px;
+}
+
+.side-right {
+  right: 12px;
+}
+
+/* =====================================
+   GRAND KUNDAN JEWELLERY BROOCH
+===================================== */
+
+.velvet-envelope .velvet-kundan-seal {
+  position: absolute;
+  z-index: 8;
+  top: 51%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  background:
+    repeating-conic-gradient(
+      #f9e1a5 0deg 15deg,
+      #a97738 15deg 30deg
+    );
+
+  border: 4px double #fff0be;
+
+  box-shadow:
+    0 0 0 3px #99642c,
+    0 5px 14px #0009,
+    0 0 16px #edc17a77;
+}
+
+.kundan-outer-ring {
+  position: absolute;
+  inset: 8px;
+
+  border: 3px dotted #fff5d4;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      #e6c681,
+      #a7793d
+    );
+}
+
+/* RUBY CENTRE */
+
+.kundan-ruby {
+  position: relative;
+  z-index: 3;
+
+  width: 37px;
+  height: 45px;
+
+  border-radius: 50%;
+  border: 4px ridge #ffe7a9;
+
+  background:
+    radial-gradient(
+      ellipse at 28% 23%,
+      #ffb7c8 0%,
+      #d51c4d 32%,
+      #7d0b2d 70%,
+      #360415 100%
+    );
+
+  box-shadow:
+    inset -4px -5px 8px #270313,
+    0 0 9px #ed647d;
+}
+
+/* EMERALD STONES */
+
+.kundan-stone {
+  position: absolute;
+  z-index: 2;
+
+  width: 14px;
+  height: 17px;
+
+  border-radius: 50%;
+  border: 2px solid #ffe8af;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #c4ffdc,
+      #21865d 45%,
+      #06462f
+    );
+
+  box-shadow: 0 1px 3px #0007;
+}
+
+.stone-top {
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stone-bottom {
+  bottom: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stone-left {
+  left: 7px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.stone-right {
+  right: 7px;
+  top: 50%;
+  transform: translateY(-50%) rotate(90deg);
+}
+
+
+/* ========================================
+   ORIGINAL SIMPLE MAROON ROYAL ENVELOPE
+======================================== */
+
+.simple-maroon-envelope {
+  position: relative;
+  width: min(78vw, 340px);
+  aspect-ratio: 1.55;
+  transform-style: preserve-3d;
+
+  filter:
+    drop-shadow(0 18px 25px rgba(0,0,0,.55));
+}
+
+/* DEEP MAROON BACK */
+
+.simple-maroon-envelope .envelope-back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  border-radius: 6px;
+  border: 2px solid #d6ac70;
+
+  background:
+    linear-gradient(
+      145deg,
+      #782d47 0%,
+      #551b33 45%,
+      #310e20 100%
+    );
+
+  box-shadow:
+    inset 0 0 0 5px #5b1d35,
+    inset 0 0 0 6px #bd915b,
+    0 8px 25px #0005;
+}
+
+/* IVORY INVITATION CARD */
+
+.simple-maroon-envelope .envelope-letter {
+  position: absolute;
+  z-index: 2;
+
+  left: 10%;
+  bottom: 7%;
+  width: 80%;
+  height: 88%;
+
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffaf0,
+      #f0dfc1
+    );
+
+  border: 2px solid #c7a16b;
+  border-radius: 4px;
+
+  box-shadow:
+    inset 0 0 0 4px #fff8e9,
+    inset 0 0 0 5px #d5b784,
+    0 4px 12px #0004;
+}
+
+.simple-maroon-envelope .envelope-letter h2 {
+  margin: 3px 0;
+  color: #74344a;
+  font-size: clamp(20px, 5vw, 27px);
+  font-style: italic;
+  font-weight: normal;
+}
+
+.simple-maroon-envelope .envelope-letter p {
+  margin: 0;
+  color: #703147;
+  font-size: clamp(11px, 3vw, 15px);
+}
+
+.simple-maroon-envelope .envelope-letter small {
+  color: #977149;
+  font-size: 8px;
+  letter-spacing: 1px;
+}
+
+.simple-maroon-envelope .letter-ornament {
+  color: #b68a50;
+  font-size: 15px;
+}
+
+.simple-maroon-envelope .letter-divider {
+  width: 60%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #b78d55,
+      transparent
+    );
+}
+
+/* PLAIN MAROON FRONT POCKET */
+
+.simple-maroon-envelope .envelope-pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+
+  border-radius: 6px;
+
+  clip-path:
+    polygon(
+      0 0,
+      50% 58%,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
+
+  background:
+    linear-gradient(
+      145deg,
+      #78314b 0%,
+      #571b34 48%,
+      #350f22 100%
+    );
+
+  box-shadow:
+    inset 0 0 0 2px #cba16b;
+}
+
+/* SIMPLE MAROON FLAP */
+
+.simple-maroon-envelope .envelope-flap {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+
+  clip-path:
+    polygon(
+      0 0,
+      100% 0,
+      50% 60%
+    );
+
+  transform-origin: top center;
+  backface-visibility: hidden;
+
+  background:
+    linear-gradient(
+      180deg,
+      #81354e 0%,
+      #5c1d35 65%,
+      #3a1024 100%
+    );
+}
+
+/* SUBTLE GOLD EDGE */
+
+.simple-maroon-envelope::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+
+  border: 2px solid #d0a36b;
+  border-radius: 6px;
+
+  pointer-events: none;
+}
+
+/* SMALL GOLD WAX SEAL */
+
+.simple-maroon-envelope .maroon-wax-seal {
+  position: absolute;
+  z-index: 8;
+
+  top: 51%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+  border: 2px solid #e1bd83;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #a94a62,
+      #741e3b 55%,
+      #430d25
+    );
+
+  box-shadow:
+    0 3px 8px #0006,
+    inset 0 0 0 3px #6b1935;
+}
+
+.simple-maroon-envelope .maroon-wax-seal span {
+  color: #eac88f;
+  font-size: 22px;
+}
+
+/* ========================================
+   ENVELOPE OPENING ANIMATION
+======================================== */
+
+.opening-envelope-screen.play
+.simple-maroon-envelope {
+  animation: simpleEnvelopeAppear 1s ease-out both;
+}
+
+.opening-envelope-screen.play
+.simple-maroon-envelope .maroon-wax-seal {
+  animation: simpleSealDisappear .7s ease 1.15s forwards;
+}
+
+.opening-envelope-screen.play
+.simple-maroon-envelope .envelope-flap {
+  animation: simpleFlapOpen 1s ease 1.75s forwards;
+}
+
+.opening-envelope-screen.play
+.simple-maroon-envelope .envelope-letter {
+  animation: simpleLetterRise 2.0s ease 2.6s forwards;
+}
+
+@keyframes simpleEnvelopeAppear {
+  from {
+    opacity: 0;
+    transform: translateY(55px) scale(.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes simpleSealDisappear {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%) scale(.5);
+  }
+}
+
+@keyframes simpleFlapOpen {
+  to {
+    transform: rotateX(180deg);
+  }
+}
+
+@keyframes simpleLetterRise {
+  65% {
+    transform: translateY(-62%);
+  }
+
+  100% {
+    transform:
+      translateY(-88%) scale(1.05);
+  }
+}
+
+
+
+
+/* PLAIN MAROON ENVELOPE - NO GOLD OUTLINE */
+
+.simple-maroon-envelope .envelope-back {
+  border: none !important;
+  background: linear-gradient(
+    145deg,
+    #782d47 0%,
+    #551b33 50%,
+    #310e20 100%
+  ) !important;
+  box-shadow: none !important;
+}
+
+.simple-maroon-envelope .envelope-pocket {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.simple-maroon-envelope .envelope-flap {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.simple-maroon-envelope::after,
+.simple-maroon-envelope::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Remove any old decorative borders */
+.simple-maroon-envelope .jewel-border,
+.simple-maroon-envelope .palace-decoration,
+.simple-maroon-envelope .velvet-gold-frame {
+  display: none !important;
+}
