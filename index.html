@@ -3,264 +3,410 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#230c13">
-  <title>P. Nirmal Kumar & S. Sandhiya | Wedding Invitation</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4c1429">
+  <meta name="description"
+        content="The wedding invitation of P. Nirmal Kumar and S. Sandhiya — 16 November 2026.">
+
+  <title>P. Nirmal Kumar &amp; S. Sandhiya | Wedding Invitation</title>
+
+  <link rel="preload"
+        as="image"
+        href="images/Ornate%20Temple%20Wedding%20Entrance.png"
+        fetchpriority="high">
+
+  <link rel="stylesheet" href="style.css?v=5">
+  <script defer src="script.js?v=5"></script>
 </head>
 
 <body>
-<main id="invitation">
 
-  <!-- PAGE 1: TEMPLE DOOR -->
-  <section class="page active" id="page1">
-    <div class="art">
-      <img src="images/1.png" alt="Two traditions, one beautiful beginning">
-      <div class="tap-hint">Tap anywhere to continue ✦</div>
-    </div>
+  <!-- BACKGROUND MUSIC -->
+  <audio
+    id="weddingMusic"
+    src="music/wedding-song2.mp3"
+    loop
+    preload="none">
+  </audio>
 
-    <div id="templeDoor" class="temple-door"
-         role="button" tabindex="0"
-         aria-label="Open wedding invitation">
+  <button
+    id="musicToggle"
+    class="music-toggle"
+    aria-label="Toggle background music"
+    hidden>
+    ♫
+  </button>
+
+  <!-- PAGE 1: TEMPLE DOORS -->
+  <section
+    id="page1"
+    class="page active opening-page"
+    aria-label="Open the wedding invitation">
+
+    <img
+      class="page-art"
+      src="images/1.png"
+      alt="Wedding invitation cover"
+      fetchpriority="high">
+
+    <div
+      id="templeDoor"
+      class="temple-door"
+      role="button"
+      tabindex="0"
+      aria-label="Tap to open temple doors">
+
       <div class="door-half left"></div>
       <div class="door-half right"></div>
-      <div class="door-label">
-        <span>✦</span>
-        <strong>Tap to Open</strong>
-        <small>Our Wedding Invitation</small>
-        <span>✦</span>
-      </div>
+
+      <span class="door-prompt">
+        Tap to open
+      </span>
+    </div>
+
+    <div class="cover-prompt">
+      Tap anywhere to continue ✦
     </div>
   </section>
 
-  
+  <!-- SIMPLE MAROON ENVELOPE -->
+  <div
+    id="openingEnvelope"
+    class="opening-envelope-screen"
+    aria-hidden="true">
 
-<!-- SIMPLE ROYAL MAROON ENVELOPE -->
-<div id="openingEnvelope" class="opening-envelope-screen">
+    <div class="royal-envelope simple-maroon-envelope">
 
-  <div class="royal-envelope simple-maroon-envelope">
+      <div class="envelope-back"></div>
 
-    <div class="envelope-back"></div>
+      <div class="envelope-letter">
 
-    <!-- Ivory invitation card -->
-    <div class="envelope-letter">
-      <span class="letter-ornament"> ❤️ </span>
+        <span class="letter-ornament">✦ ❦ ✦</span>
 
-      <h2>You're Invited</h2>
+        <small>A CELEBRATION OF LOVE</small>
 
-      <div class="letter-divider"></div>
+        <h2>You're Invited</h2>
 
-      <p>To Celebrate Our Wedding</p>
+        <div class="letter-divider"></div>
+
+        <p>P. Nirmal Kumar</p>
+        <span class="letter-amp">&amp;</span>
+        <p>S. Sandhiya</p>
+
+        <small>16 NOVEMBER 2026</small>
+
+        <span class="letter-ornament">✦ ❦ ✦</span>
+
+      </div>
+
+      <div class="envelope-pocket"></div>
+      <div class="envelope-flap"></div>
+
+      <div class="maroon-wax-seal">
+        <span>❦</span>
+      </div>
 
     </div>
-
-    <!-- Plain maroon front -->
-    <div class="envelope-pocket"></div>
-
-    <!-- Opening flap -->
-    <div class="envelope-flap"></div>
-
-    <!-- Small wax seal -->
-    <div class="maroon-wax-seal">
-      <span>❦</span>
-    </div>
-
   </div>
 
-</div>
+  <!-- PAGES 2 TO 6: VERTICAL SCROLL -->
+  <main
+    id="scrollStage"
+    class="scroll-stage"
+    aria-label="Wedding invitation details">
 
+    <!-- PAGE 2: TWO TRADITIONS -->
+    <section
+      id="page2"
+      class="scroll-page art-page"
+      aria-label="Two traditions">
 
-  <!-- NATURAL VERTICAL SCROLL: PAGES 2 TO 6 -->
-  <div id="scrollStage" class="scroll-stage">
+      <img
+        class="page-art"
+        src="images/2.png"
+        alt="Two traditions, one beautiful beginning"
+        loading="lazy"
+        decoding="async">
 
-    <!-- PAGE 2 -->
-    <section class="scroll-page" id="page2">
-      <div class="art">
-        <img src="images/2.png" alt="Wedding invitation">
-      </div>
-      <div class="scroll-hint">Swipe up to continue ↑</div>
     </section>
 
-    <!-- PAGE 3: COUNTDOWN & SCRATCH -->
-    <section class="scroll-page" id="page3">
-      <div class="art">
-        <img src="images/3.png" alt="Wedding countdown and date">
+    <!-- PAGE 3: COUNTDOWN AND SCRATCH -->
+    <section
+      id="page3"
+      class="scroll-page art-page countdown-page"
+      aria-label="Wedding countdown">
 
-        <div id="dateScratch" class="date-scratch">
-          <canvas id="scratchCanvas"
-                  aria-label="Scratch to reveal our wedding date"></canvas>
+      <img
+        class="page-art"
+        src="images/3.png"
+        alt="Wedding date and countdown background"
+        loading="lazy"
+        decoding="async">
+
+      <div
+        id="countdown"
+        class="countdown"
+        aria-live="off">
+
+        <div class="time-part">
+          <strong id="days">00</strong>
+          <span>Days</span>
         </div>
 
-        <div id="countdown" class="countdown">
-          <div><b id="days">00</b><small>DAYS</small></div>
-          <div><b id="hours">00</b><small>HOURS</small></div>
-          <div><b id="minutes">00</b><small>MINUTES</small></div>
-          <div><b id="seconds">00</b><small>SECONDS</small></div>
+        <div class="time-part">
+          <strong id="hours">00</strong>
+          <span>Hours</span>
         </div>
+
+        <div class="time-part">
+          <strong id="minutes">00</strong>
+          <span>Minutes</span>
+        </div>
+
+        <div class="time-part">
+          <strong id="seconds">00</strong>
+          <span>Seconds</span>
+        </div>
+
       </div>
-      <div class="scroll-hint">Swipe up to continue ↑</div>
+
+      <div
+        id="dateScratch"
+        class="date-scratch"
+        aria-label="Scratch to reveal our wedding date">
+
+        <div class="scratch-date">
+          16 NOVEMBER 2026
+        </div>
+
+        <canvas
+          id="scratchCanvas"
+          aria-label="Scratch away gold layer to reveal date">
+        </canvas>
+
+      </div>
     </section>
 
     <!-- PAGE 4: WEDDING -->
-    <section class="scroll-page" id="page4">
-      <div class="art">
-        <img src="images/4.png"
-             alt="Wedding ceremony at Tiruttani Murugan Temple">
-        <a class="temple-directions"
-           href="https://www.google.com/maps/search/?api=1&amp;query=Tiruttani+Murugan+Temple"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Wedding venue directions"></a>
-      </div>
-      <div class="curtain left-curtain"></div>
-      <div class="curtain right-curtain"></div>
-      <div class="scroll-hint">Swipe up to continue ↑</div>
+    <section
+      id="page4"
+      class="scroll-page art-page wedding-page"
+      aria-label="Wedding ceremony and directions">
+
+      <img
+        class="page-art"
+        src="images/4.png"
+        alt="Wedding ceremony at Tiruttani Murugan Temple"
+        loading="lazy"
+        decoding="async">
+
+      <div class="royal-curtain curtain-left"></div>
+      <div class="royal-curtain curtain-right"></div>
+
+      <a
+        class="map-hotspot wedding-map"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Tiruttani+Murugan+Temple"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open directions to Tiruttani Murugan Temple">
+
+        <span class="sr-only">
+          Wedding venue directions
+        </span>
+
+      </a>
     </section>
 
     <!-- PAGE 5: RECEPTION -->
-    <section class="scroll-page" id="page5">
-      <div class="art">
-        <img src="images/5.png"
-             alt="Reception at Rani Thirumana Mandapam, Poonamallee">
-        <a class="reception-directions"
-           href="https://www.google.com/maps/search/?api=1&amp;query=Rani+Thirumana+Mandapam+Poonamallee"
-           target="_blank" rel="noopener noreferrer"
-           aria-label="Reception venue directions"></a>
-      </div>
-      <div class="scroll-hint">Swipe up to view our moments ↑</div>
+    <section
+      id="page5"
+      class="scroll-page art-page reception-page"
+      aria-label="Reception and directions">
+
+      <img
+        class="page-art"
+        src="images/5.png"
+        alt="Reception at Rani Thirumana Mandapam, Poonamallee"
+        loading="lazy"
+        decoding="async">
+
+      <a
+        class="map-hotspot reception-map"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Rani+Thirumana+Mandapam+Poonamallee"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Open directions to Rani Thirumana Mandapam">
+
+        <span class="sr-only">
+          Reception venue directions
+        </span>
+
+      </a>
     </section>
 
-    <!-- PAGE 6: CINEMATIC ROYAL GALLERY -->
-    <section class="scroll-page gallery-page" id="page6">
-      <div class="gallery-container">
+    <!-- PAGE 6: PRE-WEDDING GALLERY -->
+    <section
+      id="page6"
+      class="scroll-page gallery-page"
+      aria-label="Our pre-wedding photo gallery">
 
-        <header class="gallery-heading">
-          <div class="gallery-ornament">✦ ❦ ✦</div>
-          <h1>Moments Before Forever</h1>
-          <p>P. Nirmal Kumar &amp; S. Sandhiya</p>
-        </header>
+      <div class="gallery-content">
 
-        <div class="gallery-photo-area" id="galleryTouchArea">
-          <button class="gallery-arrow" id="prevPhoto"
-                  type="button" aria-label="Previous photo">‹</button>
-
-          <div class="gallery-frame">
-            <div class="gallery-photo-inner">
-              <img id="galleryImage"
-                   src="images/prewedding1.jpg"
-                   alt="Pre-wedding photo 1"
-                   draggable="false">
-            </div>
-          </div>
-
-          <button class="gallery-arrow" id="nextPhoto"
-                  type="button" aria-label="Next photo">›</button>
+        <div class="gallery-ornament">
+          ❦ ✦ ❦
         </div>
 
-        <div class="gallery-controls">
-          <div id="galleryCounter" class="gallery-counter"
-               aria-live="polite">01 / 08</div>
-          <div id="galleryDots" class="gallery-dots"></div>
-        </div>
-
-        <p class="gallery-caption">
-          Every frame, a little piece of forever.
+        <p class="gallery-kicker">
+          OUR PRE-WEDDING STORY
         </p>
 
-        <button id="galleryContinue" class="gallery-continue"
-                type="button">
-          Tap here to Continue ✦
+        <h2>Moments Before Forever</h2>
+
+        <div
+          id="galleryTouchArea"
+          class="gallery-photo-frame">
+
+          <img
+            id="galleryImage"
+            src="images/prewedding1.jpg"
+            alt="Pre-wedding photo 1"
+            loading="lazy"
+            decoding="async">
+
+          <span
+            id="galleryLoading"
+            class="gallery-loading"
+            hidden>
+            Loading photo…
+          </span>
+
+          <button
+            id="prevPhoto"
+            class="gallery-arrow prev"
+            aria-label="Previous photo">
+            &#10094;
+          </button>
+
+          <button
+            id="nextPhoto"
+            class="gallery-arrow next"
+            aria-label="Next photo">
+            &#10095;
+          </button>
+
+        </div>
+
+        <div
+          id="galleryCounter"
+          class="gallery-counter">
+          01 / 08
+        </div>
+
+        <div
+          id="galleryDots"
+          class="gallery-dots"
+          aria-label="Choose a gallery photo">
+        </div>
+
+        <button
+          id="galleryContinue"
+          class="royal-continue">
+          Continue to our message ✦
         </button>
 
       </div>
     </section>
 
-  </div>
+  </main>
 
-  <!-- PAGE 7: ROYAL PARCHMENT THANK YOU -->
-  <section class="page royal-scroll-page" id="page7">
-    <div class="scroll-glow"></div>
+  <!-- PAGE 7: THANK YOU SCROLL -->
+  <section
+    id="page7"
+    class="page royal-scroll-page"
+    aria-label="Thank you">
+
+    <div class="scroll-decoration">
+      ✦ ❦ ✦
+    </div>
 
     <div class="royal-scroll">
 
-      <div class="scroll-top-rod">
-        <span class="rod-cap"></span>
-        <span class="rod-body"></span>
-        <span class="rod-cap"></span>
-      </div>
+      <div class="scroll-rod scroll-rod-top"></div>
 
       <div class="scroll-paper">
-        <div class="scroll-paper-inner">
 
-          
-
-          <div class="scroll-small-heading">
-            WITH LOVE &amp; GRATITUDE
-          </div>
-
-          <h1>Thank You</h1>
-
-          <p class="thank-you-message">
-            Our day was made even more beautiful
-            by your love and blessings.
-          </p>
-
-          <p class="thank-you-signoff">
-            With hearts full of love,
-          </p>
-
-          <div class="scroll-couple">
-            <span>P. Nirmal Kumar</span>
-            <svg class="scroll-heart-art" viewBox="0 0 50 45"
-                 aria-hidden="true">
-              <path d="M25 39 C15 30 4 23 4 13
-                       C4 2 19 -1 25 10
-                       C31 -1 46 2 46 13
-                       C46 23 35 30 25 39Z"
-                    fill="none" stroke="currentColor"
-                    stroke-width="2"/>
-              <path d="M13 13 Q17 8 21 14"
-                    fill="none" stroke="currentColor"
-                    stroke-width="1.5"/>
-            </svg>
-            <span>S. Sandhiya</span>
-          </div>
-
-          
-
+        <div class="scroll-filigree">
+          ❦ ✧ ❦
         </div>
+
+        <p class="scroll-kicker">
+          WITH LOVE &amp; GRATITUDE
+        </p>
+
+        <h2>Thank You</h2>
+
+        <div class="scroll-rule"></div>
+
+        <p class="scroll-message">
+          Our day was made even more beautiful
+          by your love and blessings.
+        </p>
+
+        <p class="scroll-message">
+          With hearts full of love,
+        </p>
+
+        <p class="scroll-names">
+          P. Nirmal Kumar
+        </p>
+
+        <svg
+          class="scroll-heart"
+          viewBox="0 0 24 24"
+          aria-label="and"
+          role="img">
+
+          <path
+            d="M12 20s-8-4.8-8-10.2C4 5.2 9.4 3.5 12 7c2.6-3.5 8-1.8 8 2.8C20 15.2 12 20 12 20Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.4"/>
+        </svg>
+
+        <p class="scroll-names">
+          S. Sandhiya
+        </p>
+
+        <div class="scroll-filigree">
+          ✧ ❦ ✧
+        </div>
+
       </div>
 
-      <div class="scroll-bottom-rod">
-        <span class="rod-cap"></span>
-        <span class="rod-body"></span>
-        <span class="rod-cap"></span>
-      </div>
+      <div class="scroll-rod scroll-rod-bottom"></div>
 
     </div>
 
-    <div class="scroll-exit-hint">
-      Tap anywhere to finish ✦
-    </div>
+    <p class="exit-hint">
+      Tap anywhere to finish
+    </p>
 
-    <div id="exitMessage" class="exit-message" hidden>
-      <div class="exit-flourish">❦</div>
-      <strong>With Love, Always</strong>
-      <small>Thank you for celebrating with us.</small>
-      <span>P. Nirmal Kumar &amp; S. Sandhiya</span>
-    </div>
   </section>
 
-</main>
+  <!-- FINAL EXIT -->
+  <div
+    id="exitMessage"
+    class="exit-message"
+    hidden>
 
-<audio id="weddingMusic" loop preload="none">
-  <source src="music/wedding-song3.mpeg" type="audio/mpeg">
-</audio>
+    <div>
+      <span>❦</span>
+      <h2>With Love &amp; Blessings</h2>
+      <p>Thank you for celebrating with us.</p>
+    </div>
 
-<button id="musicToggle" class="music-toggle"
-        type="button" aria-label="Toggle music" hidden>
-  ♫
-</button>
+  </div>
 
 </body>
 </html>
