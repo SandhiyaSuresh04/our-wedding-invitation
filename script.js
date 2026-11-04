@@ -1,34 +1,70 @@
 
 "use strict";
 
-/* ======================================
-   MAIN ELEMENTS
-====================================== */
+/* =====================================
+   ELEMENTS
+===================================== */
 
-const firstPage = document.getElementById("page1");
-const door = document.getElementById("templeDoor");
-const openingEnvelope = document.getElementById("openingEnvelope");
-const scrollStage = document.getElementById("scrollStage");
-const countdownPage = document.getElementById("page3");
-const weddingPage = document.getElementById("page4");
+const firstPage =
+  document.getElementById("page1");
 
-const music = document.getElementById("weddingMusic");
-const musicButton = document.getElementById("musicToggle");
+const door =
+  document.getElementById("templeDoor");
 
-const scratchArea = document.getElementById("dateScratch");
-const canvas = document.getElementById("scratchCanvas");
-const ctx = canvas.getContext("2d");
+const openingEnvelope =
+  document.getElementById("openingEnvelope");
+
+const scrollStage =
+  document.getElementById("scrollStage");
+
+const countdownPage =
+  document.getElementById("page3");
+
+const weddingPage =
+  document.getElementById("page4");
+
+const music =
+  document.getElementById("weddingMusic");
+
+const musicButton =
+  document.getElementById("musicToggle");
+
+const scratchArea =
+  document.getElementById("dateScratch");
+
+const canvas =
+  document.getElementById("scratchCanvas");
+
+const ctx =
+  canvas ? canvas.getContext("2d") : null;
+
+/* =====================================
+   STATE
+===================================== */
 
 let currentPage = 1;
+
 let doorOpened = false;
 let envelopeRunning = false;
 let invitationRevealed = false;
+
 let finalReady = false;
 let exitTimer = null;
 
-/* ======================================
+let scratching = false;
+let dateRevealed = false;
+let scratchPrepared = false;
+let scratchedPoints = 0;
+let lastScratchPosition = null;
+
+let lastPetalTime = 0;
+let activePetals = 0;
+
+const MAX_ACTIVE_PETALS = 65;
+
+/* =====================================
    PAGE NAVIGATION
-====================================== */
+===================================== */
 
 function showPage(pageNumber) {
 
@@ -48,9 +84,12 @@ function showPage(pageNumber) {
 
     scrollStage.classList.remove("active");
 
-    document
-      .getElementById("page" + pageNumber)
-      ?.classList.add("active");
+    const page =
+      document.getElementById("page" + pageNumber);
+
+    if (page) {
+      page.classList.add("active");
+    }
 
   }
 
@@ -59,6 +98,7 @@ function showPage(pageNumber) {
   if (pageNumber === 7) {
 
     finalReady = false;
+
     clearTimeout(exitTimer);
 
     exitTimer = setTimeout(() => {
@@ -68,50 +108,15 @@ function showPage(pageNumber) {
   }
 }
 
-/* ======================================
-   BACKGROUND MUSIC
-====================================== */
-
-function updateMusicButton() {
-
-  const playing = !music.paused && !music.muted;
-
-  musicButton.textContent = playing ? "♫" : "♪";
-
-  musicButton.setAttribute(
-    "aria-label",
-    playing ? "Mute music" : "Play music"
-  );
-}
-
-musicButton.addEventListener("click", event => {
-
-  event.stopPropagation();
-
-  if (music.paused) {
-
-    music.muted = false;
-
-    music
-      .play()
-      .then(updateMusicButton)
-      .catch(updateMusicButton);
-
-  } else {
-
-    music.muted = !music.muted;
-    updateMusicButton();
-
-  }
-});
-
-/* ======================================
+/* =====================================
    TEMPLE DOOR OPENING
-====================================== */
+===================================== */
 
 function openDoor(event) {
 
-  event?.stopPropagation();
+  if (event) {
+    event.stopPropagation();
+  }
 
   if (
     doorOpened ||
@@ -122,17 +127,21 @@ function openDoor(event) {
 
   door.classList.add("opening");
 
-  musicButton.hidden = false;
-  music.volume = 0.65;
+  if (music && musicButton) {
 
-  music
-    .play()
-    .then(updateMusicButton)
-    .catch(updateMusicButton);
+    musicButton.hidden = false;
+    music.volume = 0.65;
+
+    music.play()
+      .then(updateMusicButton)
+      .catch(updateMusicButton);
+
+  }
 
   setTimeout(() => {
 
     door.classList.add("opened");
+
     firstPage.classList.add("door-finished");
 
     doorOpened = true;
@@ -153,19 +162,20 @@ door.addEventListener("keydown", event => {
     openDoor(event);
 
   }
+
 });
 
-/* ======================================
-   MAROON ENVELOPE OPENING
-====================================== */
+/* =====================================
+   PAGE 1 -> MAHARAJA ENVELOPE -> PAGE 2
+===================================== */
 
 firstPage.addEventListener("click", event => {
 
-  if (
-    event.target.closest("#templeDoor") ||
-    !doorOpened ||
-    envelopeRunning
-  ) {
+  if (event.target.closest("#templeDoor")) {
+    return;
+  }
+
+  if (!doorOpened || envelopeRunning) {
     return;
   }
 
@@ -181,13 +191,16 @@ firstPage.addEventListener("click", event => {
 
     showPage(2);
 
-    requestAnimationFrame(prepareScratch);
+    requestAnimationFrame(() => {
+      prepareScratch();
+    });
 
   }, 3600);
 
   setTimeout(() => {
 
     invitationRevealed = true;
+
     envelopeRunning = false;
 
     openingEnvelope.classList.remove("play");
@@ -196,55 +209,383 @@ firstPage.addEventListener("click", event => {
 
 });
 
-/* ======================================
-   CONTINUOUS VERTICAL SCROLL
-====================================== */
+/* =====================================
+   NATURAL VERTICAL SCROLL
+===================================== */
 
 scrollStage.addEventListener("scroll", () => {
 
-  if (!invitationRevealed) return;
+  if (!invitationRevealed) {
+    return;
+  }
 
-  const height =
-    countdownPage.offsetHeight || innerHeight;
+  const pageHeight =
+    countdownPage.offsetHeight ||
+    window.innerHeight;
 
   const position = scrollStage.scrollTop;
 
-  currentPage =
-    position >= height * 3.7 ? 6 :
-    position >= height * 2.7 ? 5 :
-    position >= height * 1.7 ? 4 :
-    position >= height * 0.7 ? 3 : 2;
+  if (position >= pageHeight * 3.7) {
 
-  if (currentPage >= 4) {
+    currentPage = 6;
+
     weddingPage.classList.add("curtains-open");
+
+  } else if (position >= pageHeight * 2.7) {
+
+    currentPage = 5;
+
+    weddingPage.classList.add("curtains-open");
+
+  } else if (position >= pageHeight * 1.7) {
+
+    currentPage = 4;
+
+    weddingPage.classList.add("curtains-open");
+
+  } else if (position >= pageHeight * .7) {
+
+    currentPage = 3;
+
+  } else {
+
+    currentPage = 2;
+
   }
 
 }, { passive: true });
 
-/* ======================================
-   LIVE WEDDING COUNTDOWN
-====================================== */
 
-const weddingDate = new Date(
-  "2026-11-16T06:00:00+05:30"
-).getTime();
+
+
+/* =====================================
+   CINEMATIC ROYAL GALLERY
+===================================== */
+
+const galleryPhotos = Array.from(
+  { length: 8 },
+  (_, i) => `images/prewedding${i + 1}.JPG`
+);
+
+const galleryImage =
+  document.getElementById("galleryImage");
+
+const galleryCounter =
+  document.getElementById("galleryCounter");
+
+const galleryDots =
+  document.getElementById("galleryDots");
+
+const galleryTouchArea =
+  document.getElementById("galleryTouchArea");
+
+const prevPhoto =
+  document.getElementById("prevPhoto");
+
+const nextPhoto =
+  document.getElementById("nextPhoto");
+
+const galleryContinue =
+  document.getElementById("galleryContinue");
+
+let galleryIndex = 0;
+let galleryTouchStartX = 0;
+let galleryTouchStartY = 0;
+
+/* CREATE GALLERY DOTS */
+
+galleryPhotos.forEach((photo, index) => {
+
+  const dot = document.createElement("button");
+
+  dot.className = "gallery-dot";
+  dot.type = "button";
+
+  dot.setAttribute(
+    "aria-label",
+    "Show photo " + (index + 1)
+  );
+
+  dot.addEventListener("click", () => {
+    showGalleryPhoto(index);
+  });
+
+  galleryDots.appendChild(dot);
+
+});
+
+/* SHOW GALLERY PHOTO */
+
+
+/* Gallery - preload images before displaying */
+
+let galleryLoadRequest = 0;
+const galleryImageCache = new Map();
+
+// Preload all 8 photos in the background
+
+/* Load gallery photos only when gallery is nearby */
+
+const gallerySection = document.getElementById("page6");
+
+const galleryObserver = new IntersectionObserver(
+  (entries, observer) => {
+    if (!entries[0].isIntersecting) return;
+
+    galleryPhotos.forEach((src) => {
+      if (galleryImageCache.has(src)) return;
+
+      const img = new Image();
+      img.src = src;
+      galleryImageCache.set(src, img);
+    });
+
+    observer.disconnect();
+  },
+  {
+    root: document.getElementById("scrollStage"),
+    rootMargin: "400px 0px"
+  }
+);
+
+galleryObserver.observe(gallerySection);
+
+
+function showGalleryPhoto(i) {
+  const nextIndex = (i + galleryPhotos.length) % galleryPhotos.length;
+  const nextSrc = galleryPhotos[nextIndex];
+  const requestId = ++galleryLoadRequest;
+
+  galleryIndex = nextIndex;
+
+  // Prevent old image from showing as the new image
+  galleryImage.style.opacity = "0";
+
+  const nextImage = galleryImageCache.get(nextSrc);
+
+  function displayPhoto() {
+    // Ignore an outdated request if another arrow was clicked
+    if (requestId !== galleryLoadRequest) return;
+
+    galleryImage.src = nextSrc;
+    galleryImage.alt = "Pre-wedding photo " + (nextIndex + 1);
+
+    galleryCounter.textContent =
+      String(nextIndex + 1).padStart(2, "0") + " / 08";
+
+    galleryDots.querySelectorAll(".gallery-dot").forEach((dot, j) => {
+      dot.classList.toggle("active", j === nextIndex);
+    });
+
+    requestAnimationFrame(() => {
+      if (requestId === galleryLoadRequest) {
+        galleryImage.style.opacity = "1";
+      }
+    });
+  }
+
+  if (nextImage.complete && nextImage.naturalWidth > 0) {
+    displayPhoto();
+  } else {
+    nextImage.addEventListener("load", displayPhoto, { once: true });
+
+    nextImage.addEventListener("error", () => {
+      if (requestId === galleryLoadRequest) {
+        galleryImage.style.opacity = "1";
+        console.error("Gallery photo failed to load:", nextSrc);
+      }
+    }, { once: true });
+  }
+}
+
+
+prevPhoto.addEventListener("click", () => {
+  showGalleryPhoto(galleryIndex - 1);
+});
+
+nextPhoto.addEventListener("click", () => {
+  showGalleryPhoto(galleryIndex + 1);
+});
+
+/* HORIZONTAL FINGER SWIPE */
+
+galleryTouchArea.addEventListener(
+  "touchstart",
+  event => {
+
+    galleryTouchStartX =
+      event.changedTouches[0].screenX;
+
+    galleryTouchStartY =
+      event.changedTouches[0].screenY;
+
+  },
+  { passive: true }
+);
+
+galleryTouchArea.addEventListener(
+  "touchend",
+  event => {
+
+    const endX =
+      event.changedTouches[0].screenX;
+
+    const endY =
+      event.changedTouches[0].screenY;
+
+    const differenceX =
+      endX - galleryTouchStartX;
+
+    const differenceY =
+      endY - galleryTouchStartY;
+
+    if (
+      Math.abs(differenceX) > 45 &&
+      Math.abs(differenceX) > Math.abs(differenceY)
+    ) {
+
+      if (differenceX < 0) {
+
+        showGalleryPhoto(galleryIndex + 1);
+
+      } else {
+
+        showGalleryPhoto(galleryIndex - 1);
+
+      }
+
+    }
+
+  },
+  { passive: true }
+);
+
+/* KEYBOARD ARROWS */
+
+document.addEventListener("keydown", event => {
+
+  if (currentPage !== 6) {
+    return;
+  }
+
+  if (event.key === "ArrowLeft") {
+    showGalleryPhoto(galleryIndex - 1);
+  }
+
+  if (event.key === "ArrowRight") {
+    showGalleryPhoto(galleryIndex + 1);
+  }
+
+});
+
+/* GALLERY -> THANK YOU */
+
+galleryContinue.addEventListener("click", () => {
+  showPage(7);
+});
+
+/* =====================================
+   ROYAL THANK YOU ENDING
+===================================== */
+
+const finalPage =
+  document.getElementById("page7");
+
+const exitMessage =
+  document.getElementById("exitMessage");
+
+finalPage.addEventListener("click", event => {
+
+  if (event.target.closest("a, button")) {
+    return;
+  }
+
+  if (!finalReady || !exitMessage.hidden) {
+    return;
+  }
+
+  finalReady = false;
+
+  if (music) {
+    music.pause();
+  }
+
+  updateMusicButton();
+
+  exitMessage.hidden = false;
+
+});
+
+/* =====================================
+   BACKGROUND MUSIC
+===================================== */
+
+function updateMusicButton() {
+
+  if (!music || !musicButton) {
+    return;
+  }
+
+  const playing =
+    !music.paused && !music.muted;
+
+  musicButton.textContent =
+    playing ? "♫" : "♪";
+
+  musicButton.setAttribute(
+    "aria-label",
+    playing ? "Mute music" : "Play music"
+  );
+}
+
+if (music && musicButton) {
+
+  musicButton.addEventListener("click", event => {
+
+    event.stopPropagation();
+
+    if (music.paused) {
+
+      music.muted = false;
+
+      music.play()
+        .then(updateMusicButton)
+        .catch(updateMusicButton);
+
+    } else {
+
+      music.muted = !music.muted;
+
+      updateMusicButton();
+
+    }
+
+  });
+
+}
+
+/* =====================================
+   WEDDING COUNTDOWN
+===================================== */
+
+const weddingDate =
+  new Date("2026-11-16T06:00:00+05:30").getTime();
 
 function updateCountdown() {
 
-  const remaining = Math.max(
-    0,
-    weddingDate - Date.now()
-  );
+  const remaining =
+    Math.max(0, weddingDate - Date.now());
 
-  const countdown = document.getElementById("countdown");
+  const count =
+    document.getElementById("countdown");
 
   if (remaining === 0) {
 
-    if (!countdown.classList.contains("finished")) {
+    if (!count.classList.contains("finished")) {
 
-      countdown.classList.add("finished");
+      count.classList.add("finished");
 
-      countdown.textContent =
+      count.textContent =
         "Our Forever Begins Today!";
 
     }
@@ -254,27 +595,24 @@ function updateCountdown() {
 
   const values = {
 
-    days: Math.floor(
-      remaining / 86400000
-    ),
+    days:
+      Math.floor(remaining / 86400000),
 
-    hours: Math.floor(
-      remaining / 3600000
-    ) % 24,
+    hours:
+      Math.floor(remaining / 3600000) % 24,
 
-    minutes: Math.floor(
-      remaining / 60000
-    ) % 60,
+    minutes:
+      Math.floor(remaining / 60000) % 60,
 
-    seconds: Math.floor(
-      remaining / 1000
-    ) % 60
+    seconds:
+      Math.floor(remaining / 1000) % 60
 
   };
 
   Object.entries(values).forEach(([key, value]) => {
 
-    const element = document.getElementById(key);
+    const element =
+      document.getElementById(key);
 
     if (element) {
 
@@ -287,69 +625,59 @@ function updateCountdown() {
 }
 
 updateCountdown();
-
 setInterval(updateCountdown, 1000);
 
-/* ======================================
-   SCRATCH TO REVEAL DATE
-====================================== */
-
-let scratching = false;
-let dateRevealed = false;
-let scratchPrepared = false;
-let scratchedPoints = 0;
-
-let lastScratchPosition = null;
-let lastPetalTime = 0;
-let activePetals = 0;
-
-const MAX_ACTIVE_PETALS = 65;
+/* =====================================
+   GOLD SCRATCH SETUP
+===================================== */
 
 function prepareScratch() {
 
-  if (dateRevealed || scratchPrepared) {
+  if (
+    !canvas ||
+    !ctx ||
+    dateRevealed ||
+    scratchPrepared
+  ) {
     return;
   }
 
-  const rect = canvas.getBoundingClientRect();
+  const rect =
+    canvas.getBoundingClientRect();
 
-  if (!rect.width || !rect.height) {
+  if (rect.width <= 0 || rect.height <= 0) {
     return;
   }
 
-  const dpr = window.devicePixelRatio || 1;
+  const dpr =
+    window.devicePixelRatio || 1;
 
-  canvas.width = Math.round(rect.width * dpr);
-  canvas.height = Math.round(rect.height * dpr);
+  canvas.width =
+    Math.round(rect.width * dpr);
+
+  canvas.height =
+    Math.round(rect.height * dpr);
 
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  ctx.globalCompositeOperation = "source-over";
+  ctx.globalCompositeOperation =
+    "source-over";
 
-  const gradient = ctx.createLinearGradient(
-    0,
-    0,
-    rect.width,
-    rect.height
-  );
+  const gradient =
+    ctx.createLinearGradient(
+      0, 0, rect.width, rect.height
+    );
 
-  const stops = [
-    [0, "#b18445"],
-    [0.25, "#e7c58a"],
-    [0.5, "#f8e6b9"],
-    [0.75, "#d4a760"],
-    [1, "#a87536"]
-  ];
-
-  stops.forEach(([position, color]) => {
-    gradient.addColorStop(position, color);
-  });
+  gradient.addColorStop(0, "#b18445");
+  gradient.addColorStop(.25, "#e7c58a");
+  gradient.addColorStop(.5, "#f8e6b9");
+  gradient.addColorStop(.75, "#d4a760");
+  gradient.addColorStop(1, "#a87536");
 
   ctx.fillStyle = gradient;
 
   ctx.fillRect(
-    0,
-    0,
+    0, 0,
     rect.width,
     rect.height
   );
@@ -358,35 +686,38 @@ function prepareScratch() {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
 
-  ctx.font =
-    `bold ${Math.max(
+  const fontSize =
+    Math.max(
       9,
-      Math.min(17, rect.width * 0.07)
-    )}px Georgia`;
+      Math.min(17, rect.width * .07)
+    );
+
+  ctx.font = `bold ${fontSize}px Georgia`;
 
   ctx.fillText(
     "SCRATCH TO REVEAL",
     rect.width / 2,
     rect.height / 2,
-    rect.width * 0.94
+    rect.width * .94
   );
 
   scratchPrepared = true;
 }
 
-/* ======================================
-   RED ROSE PETALS
-====================================== */
+/* =====================================
+   CREATE RED ROSE PETALS
+===================================== */
 
 function createRosePetals(count = 8) {
 
-  for (
-    let i = 0;
-    i < count && activePetals < MAX_ACTIVE_PETALS;
-    i++
-  ) {
+  for (let i = 0; i < count; i++) {
 
-    const petal = document.createElement("span");
+    if (activePetals >= MAX_ACTIVE_PETALS) {
+      break;
+    }
+
+    const petal =
+      document.createElement("span");
 
     petal.className = "scratch-rose-petal";
 
@@ -394,10 +725,10 @@ function createRosePetals(count = 8) {
       Math.random() * 100 + "vw";
 
     petal.style.width =
-      10 + Math.random() * 12 + "px";
+      (10 + Math.random() * 12) + "px";
 
     petal.style.height =
-      14 + Math.random() * 16 + "px";
+      (14 + Math.random() * 16) + "px";
 
     petal.style.setProperty(
       "--drift",
@@ -410,10 +741,10 @@ function createRosePetals(count = 8) {
     );
 
     petal.style.animationDuration =
-      3.5 + Math.random() * 2.5 + "s";
+      (3.5 + Math.random() * 2.5) + "s";
 
     petal.style.animationDelay =
-      Math.random() * 0.25 + "s";
+      (Math.random() * .25) + "s";
 
     document.body.appendChild(petal);
 
@@ -422,14 +753,8 @@ function createRosePetals(count = 8) {
     petal.addEventListener(
       "animationend",
       () => {
-
         petal.remove();
-
-        activePetals = Math.max(
-          0,
-          activePetals - 1
-        );
-
+        activePetals = Math.max(0, activePetals - 1);
       },
       { once: true }
     );
@@ -437,40 +762,79 @@ function createRosePetals(count = 8) {
   }
 }
 
-/* ======================================
-   SCRATCH INTERACTION
-====================================== */
+/* =====================================
+   PETALS WHILE SCRATCHING
+===================================== */
+
+function releasePetalsDuringScratch() {
+
+  const now = performance.now();
+
+  if (now - lastPetalTime < 130) {
+    return;
+  }
+
+  lastPetalTime = now;
+
+  createRosePetals(3);
+}
+
+/* =====================================
+   COMPLETE SCRATCH
+===================================== */
 
 function finishScratch() {
 
-  if (dateRevealed) return;
+  if (dateRevealed) {
+    return;
+  }
 
   dateRevealed = true;
   scratching = false;
 
   scratchArea.classList.add("revealed");
 
+  // Final gentle rose shower
   createRosePetals(18);
+
 }
+
+/* =====================================
+   FINGER / MOUSE SCRATCH
+===================================== */
 
 function scratchAt(event) {
 
   if (
     !scratching ||
     dateRevealed ||
-    !scratchPrepared
+    !ctx ||
+    !canvas
   ) {
     return;
   }
 
   event.preventDefault();
 
-  const rect = canvas.getBoundingClientRect();
+  if (!scratchPrepared) {
+    prepareScratch();
+  }
 
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
+  if (!scratchPrepared) {
+    return;
+  }
 
-  ctx.globalCompositeOperation = "destination-out";
+  const rect =
+    canvas.getBoundingClientRect();
+
+  const x =
+    event.clientX - rect.left;
+
+  const y =
+    event.clientY - rect.top;
+
+  ctx.globalCompositeOperation =
+    "destination-out";
 
   ctx.lineWidth = 42;
   ctx.lineCap = "round";
@@ -491,9 +855,7 @@ function scratchAt(event) {
   } else {
 
     ctx.arc(
-      x,
-      y,
-      22,
+      x, y, 22,
       0,
       Math.PI * 2
     );
@@ -506,61 +868,83 @@ function scratchAt(event) {
 
   scratchedPoints++;
 
-  const now = performance.now();
-
-  if (now - lastPetalTime > 130) {
-
-    lastPetalTime = now;
-    createRosePetals(3);
-
-  }
+  // Petals continue while finger moves
+  releasePetalsDuringScratch();
 
   if (scratchedPoints >= 25) {
     finishScratch();
   }
 }
 
-canvas.addEventListener("pointerdown", event => {
+if (canvas) {
 
-  if (dateRevealed) return;
+  canvas.addEventListener(
+    "pointerdown",
+    event => {
 
-  if (!scratchPrepared) {
-    prepareScratch();
-  }
+      if (dateRevealed) {
+        return;
+      }
 
-  if (!scratchPrepared) return;
+      if (!scratchPrepared) {
+        prepareScratch();
+      }
 
-  scratching = true;
-  lastScratchPosition = null;
+      scratching = true;
+      lastScratchPosition = null;
 
-  createRosePetals(10);
+      // First petals immediately on touch
+      createRosePetals(10);
 
-  lastPetalTime = performance.now();
+      lastPetalTime = performance.now();
 
-  try {
-    canvas.setPointerCapture(event.pointerId);
-  } catch (error) {
-    // Pointer capture is optional.
-  }
+      try {
 
-  scratchAt(event);
+        canvas.setPointerCapture(
+          event.pointerId
+        );
+
+      } catch (error) {
+        // Pointer capture is optional
+      }
+
+      scratchAt(event);
+    }
+  );
+
+  canvas.addEventListener(
+    "pointermove",
+    scratchAt
+  );
+
+  canvas.addEventListener(
+    "pointerup",
+    () => {
+
+      scratching = false;
+      lastScratchPosition = null;
+
+    }
+  );
+
+  canvas.addEventListener(
+    "pointercancel",
+    () => {
+
+      scratching = false;
+      lastScratchPosition = null;
+
+    }
+  );
+}
+
+scratchArea.addEventListener("click", event => {
+  event.stopPropagation();
 });
 
-canvas.addEventListener(
-  "pointermove",
-  scratchAt
-);
-
-["pointerup", "pointercancel"].forEach(type => {
-
-  canvas.addEventListener(type, () => {
-
-    scratching = false;
-    lastScratchPosition = null;
-
-  });
-
-});
+/* =====================================
+   SCREEN RESIZE
+===================================== */
 
 window.addEventListener("resize", () => {
 
@@ -577,351 +961,9 @@ window.addEventListener("resize", () => {
 
 });
 
-/* ======================================
-   GALLERY - OPTIMIZED IMAGE LOADING
-====================================== */
-
-const galleryPhotos = Array.from(
-  { length: 8 },
-  (_, index) =>
-    `images/prewedding${index + 1}.jpg`
-);
-
-const galleryImage =
-  document.getElementById("galleryImage");
-
-const galleryCounter =
-  document.getElementById("galleryCounter");
-
-const galleryDots =
-  document.getElementById("galleryDots");
-
-const galleryTouchArea =
-  document.getElementById("galleryTouchArea");
-
-const galleryLoading =
-  document.getElementById("galleryLoading");
-
-const galleryImageCache = new Map();
-
-let galleryIndex = 0;
-let galleryLoadRequest = 0;
-
-let galleryTouchStartX = 0;
-let galleryTouchStartY = 0;
-
-/* CACHE AN IMAGE */
-
-function cachedImage(src) {
-
-  if (!galleryImageCache.has(src)) {
-
-    const image = new Image();
-
-    image.decoding = "async";
-    image.src = src;
-
-    galleryImageCache.set(src, image);
-
-  }
-
-  return galleryImageCache.get(src);
-}
-
-/* PRELOAD GALLERY WHEN NEARBY */
-
-function preloadGallery() {
-
-  galleryPhotos.forEach(cachedImage);
-
-}
-
-const galleryObserver = new IntersectionObserver(
-
-  (entries, observer) => {
-
-    if (!entries[0].isIntersecting) {
-      return;
-    }
-
-    preloadGallery();
-
-    observer.disconnect();
-
-  },
-
-  {
-    root: scrollStage,
-    rootMargin: "400px 0px"
-  }
-
-);
-
-galleryObserver.observe(
-  document.getElementById("page6")
-);
-
-/* CREATE GALLERY DOTS */
-
-galleryPhotos.forEach((photo, index) => {
-
-  const dot = document.createElement("button");
-
-  dot.type = "button";
-  dot.className = "gallery-dot";
-
-  dot.setAttribute(
-    "aria-label",
-    "Show photo " + (index + 1)
-  );
-
-  dot.addEventListener("click", () => {
-    showGalleryPhoto(index);
-  });
-
-  galleryDots.appendChild(dot);
-
-});
-
-/* UPDATE COUNTER AND DOTS */
-
-function updateGalleryControls(index) {
-
-  galleryCounter.textContent =
-    String(index + 1).padStart(2, "0") + " / 08";
-
-  galleryDots
-    .querySelectorAll(".gallery-dot")
-    .forEach((dot, i) => {
-
-      dot.classList.toggle(
-        "active",
-        i === index
-      );
-
-    });
-
-}
-
-/* SHOW SELECTED PHOTO ONLY AFTER LOADING */
-
-async function showGalleryPhoto(index) {
-
-  const nextIndex =
-    (index + galleryPhotos.length) %
-    galleryPhotos.length;
-
-  const nextSrc = galleryPhotos[nextIndex];
-
-  const requestId = ++galleryLoadRequest;
-
-  galleryIndex = nextIndex;
-
-  updateGalleryControls(nextIndex);
-
-  // Hide previous photo while next photo loads.
-  galleryImage.style.opacity = "0";
-
-  galleryLoading.textContent = "Loading photo…";
-  galleryLoading.hidden = false;
-
-  const nextImage = cachedImage(nextSrc);
-
-  try {
-
-    if (
-      !nextImage.complete ||
-      !nextImage.naturalWidth
-    ) {
-
-      await new Promise((resolve, reject) => {
-
-        nextImage.addEventListener(
-          "load",
-          resolve,
-          { once: true }
-        );
-
-        nextImage.addEventListener(
-          "error",
-          reject,
-          { once: true }
-        );
-
-      });
-
-    }
-
-    if (nextImage.decode) {
-
-      await nextImage.decode().catch(() => {});
-
-    }
-
-    // Ignore an outdated arrow click.
-    if (requestId !== galleryLoadRequest) {
-      return;
-    }
-
-    galleryImage.src = nextSrc;
-
-    galleryImage.alt =
-      "Pre-wedding photo " + (nextIndex + 1);
-
-    galleryLoading.hidden = true;
-
-    requestAnimationFrame(() => {
-
-      if (requestId === galleryLoadRequest) {
-
-        galleryImage.style.opacity = "1";
-
-      }
-
-    });
-
-  } catch (error) {
-
-    if (requestId !== galleryLoadRequest) {
-      return;
-    }
-
-    galleryLoading.textContent =
-      "Photo could not load. Please try again.";
-
-    console.error(
-      "Gallery photo failed:",
-      nextSrc,
-      error
-    );
-
-  }
-
-}
-
-/* GALLERY ARROWS */
-
-document
-  .getElementById("prevPhoto")
-  .addEventListener("click", () => {
-
-    showGalleryPhoto(galleryIndex - 1);
-
-  });
-
-document
-  .getElementById("nextPhoto")
-  .addEventListener("click", () => {
-
-    showGalleryPhoto(galleryIndex + 1);
-
-  });
-
-/* GALLERY MOBILE SWIPE */
-
-galleryTouchArea.addEventListener(
-  "touchstart",
-  event => {
-
-    galleryTouchStartX =
-      event.changedTouches[0].screenX;
-
-    galleryTouchStartY =
-      event.changedTouches[0].screenY;
-
-  },
-  { passive: true }
-);
-
-galleryTouchArea.addEventListener(
-  "touchend",
-  event => {
-
-    const dx =
-      event.changedTouches[0].screenX -
-      galleryTouchStartX;
-
-    const dy =
-      event.changedTouches[0].screenY -
-      galleryTouchStartY;
-
-    if (
-      Math.abs(dx) > 45 &&
-      Math.abs(dx) > Math.abs(dy)
-    ) {
-
-      showGalleryPhoto(
-        galleryIndex + (dx < 0 ? 1 : -1)
-      );
-
-    }
-
-  },
-  { passive: true }
-);
-
-/* DESKTOP ARROW KEYS */
-
-document.addEventListener("keydown", event => {
-
-  if (currentPage !== 6) {
-    return;
-  }
-
-  if (event.key === "ArrowLeft") {
-
-    showGalleryPhoto(galleryIndex - 1);
-
-  }
-
-  if (event.key === "ArrowRight") {
-
-    showGalleryPhoto(galleryIndex + 1);
-
-  }
-
-});
-
-/* ======================================
-   FINAL THANK YOU SCROLL
-====================================== */
-
-document
-  .getElementById("galleryContinue")
-  .addEventListener("click", () => {
-
-    showPage(7);
-
-  });
-
-document
-  .getElementById("page7")
-  .addEventListener("click", event => {
-
-    const exitMessage =
-      document.getElementById("exitMessage");
-
-    if (
-      event.target.closest("a,button") ||
-      !finalReady ||
-      !exitMessage.hidden
-    ) {
-      return;
-    }
-
-    finalReady = false;
-
-    music.pause();
-    updateMusicButton();
-
-    exitMessage.hidden = false;
-
-  });
-
-/* ======================================
-   INITIAL SETUP
-====================================== */
-
-updateGalleryControls(0);
-
+/* =====================================
+   INITIALIZE
+===================================== */
+
+showGalleryPhoto(0);
 showPage(1);
