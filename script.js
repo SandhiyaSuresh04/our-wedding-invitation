@@ -313,39 +313,66 @@ galleryPhotos.forEach((photo, index) => {
 
 /* SHOW GALLERY PHOTO */
 
-function showGalleryPhoto(index) {
 
-  galleryIndex =
-    (index + galleryPhotos.length) %
-    galleryPhotos.length;
+/* Gallery - preload images before displaying */
 
-  galleryImage.classList.remove("photo-changing");
+let galleryLoadRequest = 0;
+const galleryImageCache = new Map();
 
-  void galleryImage.offsetWidth;
+// Preload all 8 photos in the background
+galleryPhotos.forEach((src) => {
+  const img = new Image();
+  img.src = src;
+  galleryImageCache.set(src, img);
+});
 
-  galleryImage.src = galleryPhotos[galleryIndex];
+function showGalleryPhoto(i) {
+  const nextIndex = (i + galleryPhotos.length) % galleryPhotos.length;
+  const nextSrc = galleryPhotos[nextIndex];
+  const requestId = ++galleryLoadRequest;
 
-  galleryImage.alt =
-    "Pre-wedding photo " + (galleryIndex + 1);
+  galleryIndex = nextIndex;
 
-  galleryImage.classList.add("photo-changing");
+  // Prevent old image from showing as the new image
+  galleryImage.style.opacity = "0";
 
-  galleryCounter.textContent =
-    String(galleryIndex + 1).padStart(2, "0") +
-    " / " +
-    String(galleryPhotos.length).padStart(2, "0");
+  const nextImage = galleryImageCache.get(nextSrc);
 
-  galleryDots
-    .querySelectorAll(".gallery-dot")
-    .forEach((dot, i) => {
+  function displayPhoto() {
+    // Ignore an outdated request if another arrow was clicked
+    if (requestId !== galleryLoadRequest) return;
 
-      dot.classList.toggle(
-        "active",
-        i === galleryIndex
-      );
+    galleryImage.src = nextSrc;
+    galleryImage.alt = "Pre-wedding photo " + (nextIndex + 1);
 
+    galleryCounter.textContent =
+      String(nextIndex + 1).padStart(2, "0") + " / 08";
+
+    galleryDots.querySelectorAll(".gallery-dot").forEach((dot, j) => {
+      dot.classList.toggle("active", j === nextIndex);
     });
+
+    requestAnimationFrame(() => {
+      if (requestId === galleryLoadRequest) {
+        galleryImage.style.opacity = "1";
+      }
+    });
+  }
+
+  if (nextImage.complete && nextImage.naturalWidth > 0) {
+    displayPhoto();
+  } else {
+    nextImage.addEventListener("load", displayPhoto, { once: true });
+
+    nextImage.addEventListener("error", () => {
+      if (requestId === galleryLoadRequest) {
+        galleryImage.style.opacity = "1";
+        console.error("Gallery photo failed to load:", nextSrc);
+      }
+    }, { once: true });
+  }
 }
+
 
 prevPhoto.addEventListener("click", () => {
   showGalleryPhoto(galleryIndex - 1);
