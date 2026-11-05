@@ -177,7 +177,7 @@ scrollStage.addEventListener("scroll", () => {
 
 const galleryPhotos = Array.from(
   { length: 8 },
-  (_, i) => `images/prewedding${i + 1}.jpg`
+  (_, i) => `images/prewedding${i + 1}.JPG`
 );
 
 const galleryImage = document.getElementById("galleryImage");
